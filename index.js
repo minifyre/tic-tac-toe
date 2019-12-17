@@ -12,17 +12,15 @@ const STATE=
 		null,null,null,
 		null,null,null,
 		null,null,null
-	],
-	winner:null
+	]
 }
 const resetState=state=>Object.assign(state,JSON.parse(JSON.stringify(STATE)))
 const makeMove=(state,i)=>()=>
 {
-	if(state.winner||state.grid[i]) return//game is over OR non-empty cell
+	if(whoWins(state)||state.grid[i]) return//game is over OR non-empty cell
 
 	const turn=whoseTurn(state)
 	state.grid[i]=turn
-	if(doesPlayerWin(state,turn)) state.winner=turn
 }
 const doesPlayerWin=(state,player)=>
 {
@@ -41,11 +39,16 @@ const whoseTurn=({grid})=>
 	grid.filter(cell=>cell==='o').length<grid.filter(cell=>cell==='x').length
 	?'o'
 	:'x'
+const whoWins=state=>
+	doesPlayerWin(state,'x')?'x':
+	doesPlayerWin(state,'o')?'o':
+	null;
 const output=state=>
 {
+	const winner=whoWins(state)
 	const player=whoseTurn(state)
-	const [turnLabel,resetLabel]=state.winner
-		?[`${state.winner} wins!`,'play again?']
+	const [turnLabel,resetLabel]=winner
+		?[`${winner} wins!`,'play again?']
 		:[`${player}'s turn`,'restart']
 	const header=v.header({},
 		turnLabel,
