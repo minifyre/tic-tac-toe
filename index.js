@@ -22,31 +22,24 @@ const makeMove=(state,i)=>()=>
 	if(state.winner||state.grid[i]) return//game is over OR non-empty cell
 
 	state.grid[i]=state.turn
-	check4win(state)
+	if(doesPlayerWin(state,state.turn)) state.winner=state.turn
 	state.turn=
 		state.winner?null:
 		state.turn==='x'?'o':
 		'x'
 }
-const check4win=state=>
+const doesPlayerWin=(state,player)=>
 {
 	const {grid}=state
 	const col=x=>getCol(3,3,grid,x)
 	const row=y=>getRow(3,3,grid,y)
+	const equal=line=>allEqual(player,...line)
 
-	if(
-		//rows
-		(grid[0]!==null&&allEqual(...row(0)))||
-		(grid[3]!==null&&allEqual(...row(1)))||
-		(grid[6]!==null&&allEqual(...row(2)))||
-		//cols
-		(grid[0]!==null&&allEqual(...col(0)))||
-		(grid[1]!==null&&allEqual(...col(1)))||
-		(grid[2]!==null&&allEqual(...col(2)))||
-		//diagonals
-		(grid[0]!==null&&allEqual(grid[0],grid[4],grid[8]))||
-		(grid[2]!==null&&allEqual(grid[2],grid[4],grid[6]))
-	) state.winner=state.turn
+	return (
+		(equal(row(0)))||(equal(row(1)))||(equal(row(2)))||//rows
+		(equal(col(0)))||(equal(col(1)))||(equal(col(2)))||//cols
+		(equal([grid[0],grid[4],grid[8]]))||(equal([grid[2],grid[4],grid[6]]))//diagonals
+	)
 }
 const output=state=>
 {
