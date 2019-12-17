@@ -1,0 +1,14 @@
+.board
+{
+	border:1px solid #222;
+	height:90vmin;
+	width:90vmin;
+}
+.board .cell
+{
+	float:left;
+	height:30vmin;
+	outline:1px solid #222;
+	outline-offset:-1px;
+	width:30vmin;
+}
