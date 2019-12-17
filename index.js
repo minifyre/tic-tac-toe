@@ -1,6 +1,10 @@
 import truth from '../../node_modules_src/truth/src/index.js'
 import v from '../../node_modules_src/v/src/index.js'
 
+const allEqual=(a,b,...more)=>a===b&&(!more.length||allEqual(b,...more))
+const getCol=(width,height,arr,x)=>[...Array(height)].map((_,i)=>arr[i*width+x])
+const getRow=(width,height,arr,y)=>[...Array(width)].map((_,i)=>arr[y*width+i])
+
 const STATE=
 {
 	grid:
@@ -27,18 +31,21 @@ const makeMove=(state,i)=>()=>
 const check4win=state=>
 {
 	const {grid}=state
+	const col=x=>getCol(3,3,grid,x)
+	const row=y=>getRow(3,3,grid,y)
+
 	if(
 		//rows
-		(grid[0]!==null&&grid[0]===grid[1]&&grid[1]===grid[2])||
-		(grid[3]!==null&&grid[3]===grid[4]&&grid[4]===grid[5])||
-		(grid[6]!==null&&grid[6]===grid[7]&&grid[7]===grid[8])||
+		(grid[0]!==null&&allEqual(...row(0)))||
+		(grid[3]!==null&&allEqual(...row(1)))||
+		(grid[6]!==null&&allEqual(...row(2)))||
 		//cols
-		(grid[0]!==null&&grid[0]===grid[3]&&grid[3]===grid[6])||
-		(grid[1]!==null&&grid[1]===grid[4]&&grid[4]===grid[7])||
-		(grid[2]!==null&&grid[2]===grid[5]&&grid[5]===grid[8])||
+		(grid[0]!==null&&allEqual(...col(0)))||
+		(grid[1]!==null&&allEqual(...col(1)))||
+		(grid[2]!==null&&allEqual(...col(2)))||
 		//diagonals
-		(grid[0]!==null&&grid[0]===grid[4]&&grid[4]===grid[8])||
-		(grid[2]!==null&&grid[2]===grid[4]&&grid[4]===grid[6])
+		(grid[0]!==null&&allEqual(grid[0],grid[4],grid[8]))||
+		(grid[2]!==null&&allEqual(grid[2],grid[4],grid[6]))
 	) state.winner=state.turn
 }
 const output=state=>
